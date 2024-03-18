@@ -1,0 +1,616 @@
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[9960],{7682:function(e,t,r){"use strict";r.d(t,{BH:function(){return Deferred},L:function(){return base64urlEncodeWithoutPadding},LL:function(){return ErrorFactory},ZR:function(){return FirebaseError},aH:function(){return getDefaultAppConfig},eu:function(){return validateIndexedDBOpenable},hl:function(){return isIndexedDBAvailable},m9:function(){return getModularInstance},vZ:function(){return function deepEqual(e,t){if(e===t)return!0;let r=Object.keys(e),i=Object.keys(t);for(let n of r){if(!i.includes(n))return!1;let r=e[n],a=t[n];if(isObject(r)&&isObject(a)){if(!deepEqual(r,a))return!1}else if(r!==a)return!1}for(let e of i)if(!r.includes(e))return!1;return!0}},zI:function(){return areCookiesEnabled}});var i=r(28070);/**
+ * @license
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */let stringToByteArray$1=function(e){let t=[],r=0;for(let i=0;i<e.length;i++){let n=e.charCodeAt(i);n<128?t[r++]=n:(n<2048?t[r++]=n>>6|192:((64512&n)==55296&&i+1<e.length&&(64512&e.charCodeAt(i+1))==56320?(n=65536+((1023&n)<<10)+(1023&e.charCodeAt(++i)),t[r++]=n>>18|240,t[r++]=n>>12&63|128):t[r++]=n>>12|224,t[r++]=n>>6&63|128),t[r++]=63&n|128)}return t},byteArrayToString=function(e){let t=[],r=0,i=0;for(;r<e.length;){let n=e[r++];if(n<128)t[i++]=String.fromCharCode(n);else if(n>191&&n<224){let a=e[r++];t[i++]=String.fromCharCode((31&n)<<6|63&a)}else if(n>239&&n<365){let a=e[r++],o=e[r++],s=e[r++],l=((7&n)<<18|(63&a)<<12|(63&o)<<6|63&s)-65536;t[i++]=String.fromCharCode(55296+(l>>10)),t[i++]=String.fromCharCode(56320+(1023&l))}else{let a=e[r++],o=e[r++];t[i++]=String.fromCharCode((15&n)<<12|(63&a)<<6|63&o)}}return t.join("")},n={byteToCharMap_:null,charToByteMap_:null,byteToCharMapWebSafe_:null,charToByteMapWebSafe_:null,ENCODED_VALS_BASE:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",get ENCODED_VALS(){return this.ENCODED_VALS_BASE+"+/="},get ENCODED_VALS_WEBSAFE(){return this.ENCODED_VALS_BASE+"-_."},HAS_NATIVE_SUPPORT:"function"==typeof atob,encodeByteArray(e,t){if(!Array.isArray(e))throw Error("encodeByteArray takes an array as a parameter");this.init_();let r=t?this.byteToCharMapWebSafe_:this.byteToCharMap_,i=[];for(let t=0;t<e.length;t+=3){let n=e[t],a=t+1<e.length,o=a?e[t+1]:0,s=t+2<e.length,l=s?e[t+2]:0,c=n>>2,u=(3&n)<<4|o>>4,d=(15&o)<<2|l>>6,p=63&l;s||(p=64,a||(d=64)),i.push(r[c],r[u],r[d],r[p])}return i.join("")},encodeString(e,t){return this.HAS_NATIVE_SUPPORT&&!t?btoa(e):this.encodeByteArray(stringToByteArray$1(e),t)},decodeString(e,t){return this.HAS_NATIVE_SUPPORT&&!t?atob(e):byteArrayToString(this.decodeStringToByteArray(e,t))},decodeStringToByteArray(e,t){this.init_();let r=t?this.charToByteMapWebSafe_:this.charToByteMap_,i=[];for(let t=0;t<e.length;){let n=r[e.charAt(t++)],a=t<e.length,o=a?r[e.charAt(t)]:0;++t;let s=t<e.length,l=s?r[e.charAt(t)]:64;++t;let c=t<e.length,u=c?r[e.charAt(t)]:64;if(++t,null==n||null==o||null==l||null==u)throw new DecodeBase64StringError;let d=n<<2|o>>4;if(i.push(d),64!==l){let e=o<<4&240|l>>2;if(i.push(e),64!==u){let e=l<<6&192|u;i.push(e)}}}return i},init_(){if(!this.byteToCharMap_){this.byteToCharMap_={},this.charToByteMap_={},this.byteToCharMapWebSafe_={},this.charToByteMapWebSafe_={};for(let e=0;e<this.ENCODED_VALS.length;e++)this.byteToCharMap_[e]=this.ENCODED_VALS.charAt(e),this.charToByteMap_[this.byteToCharMap_[e]]=e,this.byteToCharMapWebSafe_[e]=this.ENCODED_VALS_WEBSAFE.charAt(e),this.charToByteMapWebSafe_[this.byteToCharMapWebSafe_[e]]=e,e>=this.ENCODED_VALS_BASE.length&&(this.charToByteMap_[this.ENCODED_VALS_WEBSAFE.charAt(e)]=e,this.charToByteMapWebSafe_[this.ENCODED_VALS.charAt(e)]=e)}}};let DecodeBase64StringError=class DecodeBase64StringError extends Error{constructor(){super(...arguments),this.name="DecodeBase64StringError"}};let base64Encode=function(e){let t=stringToByteArray$1(e);return n.encodeByteArray(t,!0)},base64urlEncodeWithoutPadding=function(e){return base64Encode(e).replace(/\./g,"")},base64Decode=function(e){try{return n.decodeString(e,!0)}catch(e){console.error("base64Decode failed: ",e)}return null},getDefaultsFromGlobal=()=>/**
+ * @license
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */(function(){if("undefined"!=typeof self)return self;if("undefined"!=typeof window)return window;if(void 0!==r.g)return r.g;throw Error("Unable to locate global object.")})().__FIREBASE_DEFAULTS__,getDefaultsFromEnvVariable=()=>{if(void 0===i||void 0===i.env)return;let e=i.env.__FIREBASE_DEFAULTS__;if(e)return JSON.parse(e)},getDefaultsFromCookie=()=>{let e;if("undefined"==typeof document)return;try{e=document.cookie.match(/__FIREBASE_DEFAULTS__=([^;]+)/)}catch(e){return}let t=e&&base64Decode(e[1]);return t&&JSON.parse(t)},getDefaults=()=>{try{return getDefaultsFromGlobal()||getDefaultsFromEnvVariable()||getDefaultsFromCookie()}catch(e){console.info(`Unable to get __FIREBASE_DEFAULTS__ due to: ${e}`);return}},getDefaultAppConfig=()=>{var e;return null===(e=getDefaults())||void 0===e?void 0:e.config};/**
+ * @license
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */let Deferred=class Deferred{constructor(){this.reject=()=>{},this.resolve=()=>{},this.promise=new Promise((e,t)=>{this.resolve=e,this.reject=t})}wrapCallback(e){return(t,r)=>{t?this.reject(t):this.resolve(r),"function"==typeof e&&(this.promise.catch(()=>{}),1===e.length?e(t):e(t,r))}}};function isIndexedDBAvailable(){try{return"object"==typeof indexedDB}catch(e){return!1}}function validateIndexedDBOpenable(){return new Promise((e,t)=>{try{let r=!0,i="validate-browser-context-for-indexeddb-analytics-module",n=self.indexedDB.open(i);n.onsuccess=()=>{n.result.close(),r||self.indexedDB.deleteDatabase(i),e(!0)},n.onupgradeneeded=()=>{r=!1},n.onerror=()=>{var e;t((null===(e=n.error)||void 0===e?void 0:e.message)||"")}}catch(e){t(e)}})}function areCookiesEnabled(){return"undefined"!=typeof navigator&&!!navigator.cookieEnabled}let FirebaseError=class FirebaseError extends Error{constructor(e,t,r){super(t),this.code=e,this.customData=r,this.name="FirebaseError",Object.setPrototypeOf(this,FirebaseError.prototype),Error.captureStackTrace&&Error.captureStackTrace(this,ErrorFactory.prototype.create)}};let ErrorFactory=class ErrorFactory{constructor(e,t,r){this.service=e,this.serviceName=t,this.errors=r}create(e,...t){let r=t[0]||{},i=`${this.service}/${e}`,n=this.errors[e],o=n?n.replace(a,(e,t)=>{let i=r[t];return null!=i?String(i):`<${t}?>`}):"Error",s=`${this.serviceName}: ${o} (${i}).`,l=new FirebaseError(i,s,r);return l}};let a=/\{\$([^}]+)}/g;function isObject(e){return null!==e&&"object"==typeof e}/**
+ * @license
+ * Copyright 2021 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */function getModularInstance(e){return e&&e._delegate?e._delegate:e}},28070:function(e){var t,r,i,n=e.exports={};function defaultSetTimout(){throw Error("setTimeout has not been defined")}function defaultClearTimeout(){throw Error("clearTimeout has not been defined")}function runTimeout(e){if(t===setTimeout)return setTimeout(e,0);if((t===defaultSetTimout||!t)&&setTimeout)return t=setTimeout,setTimeout(e,0);try{return t(e,0)}catch(r){try{return t.call(null,e,0)}catch(r){return t.call(this,e,0)}}}!function(){try{t="function"==typeof setTimeout?setTimeout:defaultSetTimout}catch(e){t=defaultSetTimout}try{r="function"==typeof clearTimeout?clearTimeout:defaultClearTimeout}catch(e){r=defaultClearTimeout}}();var a=[],o=!1,s=-1;function cleanUpNextTick(){o&&i&&(o=!1,i.length?a=i.concat(a):s=-1,a.length&&drainQueue())}function drainQueue(){if(!o){var e=runTimeout(cleanUpNextTick);o=!0;for(var t=a.length;t;){for(i=a,a=[];++s<t;)i&&i[s].run();s=-1,t=a.length}i=null,o=!1,function(e){if(r===clearTimeout)return clearTimeout(e);if((r===defaultClearTimeout||!r)&&clearTimeout)return r=clearTimeout,clearTimeout(e);try{r(e)}catch(t){try{return r.call(null,e)}catch(t){return r.call(this,e)}}}(e)}}function Item(e,t){this.fun=e,this.array=t}function noop(){}n.nextTick=function(e){var t=Array(arguments.length-1);if(arguments.length>1)for(var r=1;r<arguments.length;r++)t[r-1]=arguments[r];a.push(new Item(e,t)),1!==a.length||o||runTimeout(drainQueue)},Item.prototype.run=function(){this.fun.apply(null,this.array)},n.title="browser",n.browser=!0,n.env={},n.argv=[],n.version="",n.versions={},n.on=noop,n.addListener=noop,n.once=noop,n.off=noop,n.removeListener=noop,n.removeAllListeners=noop,n.emit=noop,n.prependListener=noop,n.prependOnceListener=noop,n.listeners=function(e){return[]},n.binding=function(e){throw Error("process.binding is not supported")},n.cwd=function(){return"/"},n.chdir=function(e){throw Error("process.chdir is not supported")},n.umask=function(){return 0}},39856:function(e,t,r){var i;!function(n,a){"use strict";var o="function",s="undefined",l="object",c="string",u="major",d="model",p="name",f="type",h="vendor",g="version",b="architecture",w="console",m="mobile",v="tablet",y="smarttv",I="wearable",k="embedded",_="Amazon",S="Apple",E="ASUS",T="BlackBerry",D="Browser",C="Chrome",A="Firefox",x="Google",B="Huawei",O="Microsoft",P="Motorola",M="Opera",L="Samsung",N="Sharp",R="Sony",j="Xiaomi",F="Zebra",H="Facebook",$="Chromium OS",q="Mac OS",extend=function(e,t){var r={};for(var i in e)t[i]&&t[i].length%2==0?r[i]=t[i].concat(e[i]):r[i]=e[i];return r},enumerize=function(e){for(var t={},r=0;r<e.length;r++)t[e[r].toUpperCase()]=e[r];return t},has=function(e,t){return typeof e===c&&-1!==lowerize(t).indexOf(lowerize(e))},lowerize=function(e){return e.toLowerCase()},trim=function(e,t){if(typeof e===c)return e=e.replace(/^\s\s*/,""),typeof t===s?e:e.substring(0,500)},rgxMapper=function(e,t){for(var r,i,n,s,c,u,d=0;d<t.length&&!c;){var p=t[d],f=t[d+1];for(r=i=0;r<p.length&&!c&&p[r];)if(c=p[r++].exec(e))for(n=0;n<f.length;n++)u=c[++i],typeof(s=f[n])===l&&s.length>0?2===s.length?typeof s[1]==o?this[s[0]]=s[1].call(this,u):this[s[0]]=s[1]:3===s.length?typeof s[1]!==o||s[1].exec&&s[1].test?this[s[0]]=u?u.replace(s[1],s[2]):a:this[s[0]]=u?s[1].call(this,u,s[2]):a:4===s.length&&(this[s[0]]=u?s[3].call(this,u.replace(s[1],s[2])):a):this[s]=u||a;d+=2}},strMapper=function(e,t){for(var r in t)if(typeof t[r]===l&&t[r].length>0){for(var i=0;i<t[r].length;i++)if(has(t[r][i],e))return"?"===r?a:r}else if(has(t[r],e))return"?"===r?a:r;return e},U={ME:"4.90","NT 3.11":"NT3.51","NT 4.0":"NT4.0",2e3:"NT 5.0",XP:["NT 5.1","NT 5.2"],Vista:"NT 6.0",7:"NT 6.1",8:"NT 6.2","8.1":"NT 6.3",10:["NT 6.4","NT 10.0"],RT:"ARM"},V={browser:[[/\b(?:crmo|crios)\/([\w\.]+)/i],[g,[p,"Chrome"]],[/edg(?:e|ios|a)?\/([\w\.]+)/i],[g,[p,"Edge"]],[/(opera mini)\/([-\w\.]+)/i,/(opera [mobiletab]{3,6})\b.+version\/([-\w\.]+)/i,/(opera)(?:.+version\/|[\/ ]+)([\w\.]+)/i],[p,g],[/opios[\/ ]+([\w\.]+)/i],[g,[p,M+" Mini"]],[/\bopr\/([\w\.]+)/i],[g,[p,M]],[/\bb[ai]*d(?:uhd|[ub]*[aekoprswx]{5,6})[\/ ]?([\w\.]+)/i],[g,[p,"Baidu"]],[/(kindle)\/([\w\.]+)/i,/(lunascape|maxthon|netfront|jasmine|blazer)[\/ ]?([\w\.]*)/i,/(avant|iemobile|slim)\s?(?:browser)?[\/ ]?([\w\.]*)/i,/(?:ms|\()(ie) ([\w\.]+)/i,/(flock|rockmelt|midori|epiphany|silk|skyfire|bolt|iron|vivaldi|iridium|phantomjs|bowser|quark|qupzilla|falkon|rekonq|puffin|brave|whale(?!.+naver)|qqbrowserlite|qq|duckduckgo)\/([-\w\.]+)/i,/(heytap|ovi)browser\/([\d\.]+)/i,/(weibo)__([\d\.]+)/i],[p,g],[/(?:\buc? ?browser|(?:juc.+)ucweb)[\/ ]?([\w\.]+)/i],[g,[p,"UC"+D]],[/microm.+\bqbcore\/([\w\.]+)/i,/\bqbcore\/([\w\.]+).+microm/i,/micromessenger\/([\w\.]+)/i],[g,[p,"WeChat"]],[/konqueror\/([\w\.]+)/i],[g,[p,"Konqueror"]],[/trident.+rv[: ]([\w\.]{1,9})\b.+like gecko/i],[g,[p,"IE"]],[/ya(?:search)?browser\/([\w\.]+)/i],[g,[p,"Yandex"]],[/slbrowser\/([\w\.]+)/i],[g,[p,"Smart Lenovo "+D]],[/(avast|avg)\/([\w\.]+)/i],[[p,/(.+)/,"$1 Secure "+D],g],[/\bfocus\/([\w\.]+)/i],[g,[p,A+" Focus"]],[/\bopt\/([\w\.]+)/i],[g,[p,M+" Touch"]],[/coc_coc\w+\/([\w\.]+)/i],[g,[p,"Coc Coc"]],[/dolfin\/([\w\.]+)/i],[g,[p,"Dolphin"]],[/coast\/([\w\.]+)/i],[g,[p,M+" Coast"]],[/miuibrowser\/([\w\.]+)/i],[g,[p,"MIUI "+D]],[/fxios\/([-\w\.]+)/i],[g,[p,A]],[/\bqihu|(qi?ho?o?|360)browser/i],[[p,"360 "+D]],[/(oculus|sailfish|huawei|vivo)browser\/([\w\.]+)/i],[[p,/(.+)/,"$1 "+D],g],[/samsungbrowser\/([\w\.]+)/i],[g,[p,L+" Internet"]],[/(comodo_dragon)\/([\w\.]+)/i],[[p,/_/g," "],g],[/metasr[\/ ]?([\d\.]+)/i],[g,[p,"Sogou Explorer"]],[/(sogou)mo\w+\/([\d\.]+)/i],[[p,"Sogou Mobile"],g],[/(electron)\/([\w\.]+) safari/i,/(tesla)(?: qtcarbrowser|\/(20\d\d\.[-\w\.]+))/i,/m?(qqbrowser|2345Explorer)[\/ ]?([\w\.]+)/i],[p,g],[/(lbbrowser)/i,/\[(linkedin)app\]/i],[p],[/((?:fban\/fbios|fb_iab\/fb4a)(?!.+fbav)|;fbav\/([\w\.]+);)/i],[[p,H],g],[/(Klarna)\/([\w\.]+)/i,/(kakao(?:talk|story))[\/ ]([\w\.]+)/i,/(naver)\(.*?(\d+\.[\w\.]+).*\)/i,/safari (line)\/([\w\.]+)/i,/\b(line)\/([\w\.]+)\/iab/i,/(alipay)client\/([\w\.]+)/i,/(chromium|instagram|snapchat)[\/ ]([-\w\.]+)/i],[p,g],[/\bgsa\/([\w\.]+) .*safari\//i],[g,[p,"GSA"]],[/musical_ly(?:.+app_?version\/|_)([\w\.]+)/i],[g,[p,"TikTok"]],[/headlesschrome(?:\/([\w\.]+)| )/i],[g,[p,C+" Headless"]],[/ wv\).+(chrome)\/([\w\.]+)/i],[[p,C+" WebView"],g],[/droid.+ version\/([\w\.]+)\b.+(?:mobile safari|safari)/i],[g,[p,"Android "+D]],[/(chrome|omniweb|arora|[tizenoka]{5} ?browser)\/v?([\w\.]+)/i],[p,g],[/version\/([\w\.\,]+) .*mobile\/\w+ (safari)/i],[g,[p,"Mobile Safari"]],[/version\/([\w(\.|\,)]+) .*(mobile ?safari|safari)/i],[g,p],[/webkit.+?(mobile ?safari|safari)(\/[\w\.]+)/i],[p,[g,strMapper,{"1.0":"/8","1.2":"/1","1.3":"/3","2.0":"/412","2.0.2":"/416","2.0.3":"/417","2.0.4":"/419","?":"/"}]],[/(webkit|khtml)\/([\w\.]+)/i],[p,g],[/(navigator|netscape\d?)\/([-\w\.]+)/i],[[p,"Netscape"],g],[/mobile vr; rv:([\w\.]+)\).+firefox/i],[g,[p,A+" Reality"]],[/ekiohf.+(flow)\/([\w\.]+)/i,/(swiftfox)/i,/(icedragon|iceweasel|camino|chimera|fennec|maemo browser|minimo|conkeror|klar)[\/ ]?([\w\.\+]+)/i,/(seamonkey|k-meleon|icecat|iceape|firebird|phoenix|palemoon|basilisk|waterfox)\/([-\w\.]+)$/i,/(firefox)\/([\w\.]+)/i,/(mozilla)\/([\w\.]+) .+rv\:.+gecko\/\d+/i,/(polaris|lynx|dillo|icab|doris|amaya|w3m|netsurf|sleipnir|obigo|mosaic|(?:go|ice|up)[\. ]?browser)[-\/ ]?v?([\w\.]+)/i,/(links) \(([\w\.]+)/i,/panasonic;(viera)/i],[p,g],[/(cobalt)\/([\w\.]+)/i],[p,[g,/master.|lts./,""]]],cpu:[[/(?:(amd|x(?:(?:86|64)[-_])?|wow|win)64)[;\)]/i],[[b,"amd64"]],[/(ia32(?=;))/i],[[b,lowerize]],[/((?:i[346]|x)86)[;\)]/i],[[b,"ia32"]],[/\b(aarch64|arm(v?8e?l?|_?64))\b/i],[[b,"arm64"]],[/\b(arm(?:v[67])?ht?n?[fl]p?)\b/i],[[b,"armhf"]],[/windows (ce|mobile); ppc;/i],[[b,"arm"]],[/((?:ppc|powerpc)(?:64)?)(?: mac|;|\))/i],[[b,/ower/,"",lowerize]],[/(sun4\w)[;\)]/i],[[b,"sparc"]],[/((?:avr32|ia64(?=;))|68k(?=\))|\barm(?=v(?:[1-7]|[5-7]1)l?|;|eabi)|(?=atmel )avr|(?:irix|mips|sparc)(?:64)?\b|pa-risc)/i],[[b,lowerize]]],device:[[/\b(sch-i[89]0\d|shw-m380s|sm-[ptx]\w{2,4}|gt-[pn]\d{2,4}|sgh-t8[56]9|nexus 10)/i],[d,[h,L],[f,v]],[/\b((?:s[cgp]h|gt|sm)-\w+|sc[g-]?[\d]+a?|galaxy nexus)/i,/samsung[- ]([-\w]+)/i,/sec-(sgh\w+)/i],[d,[h,L],[f,m]],[/(?:\/|\()(ip(?:hone|od)[\w, ]*)(?:\/|;)/i],[d,[h,S],[f,m]],[/\((ipad);[-\w\),; ]+apple/i,/applecoremedia\/[\w\.]+ \((ipad)/i,/\b(ipad)\d\d?,\d\d?[;\]].+ios/i],[d,[h,S],[f,v]],[/(macintosh);/i],[d,[h,S]],[/\b(sh-?[altvz]?\d\d[a-ekm]?)/i],[d,[h,N],[f,m]],[/\b((?:ag[rs][23]?|bah2?|sht?|btv)-a?[lw]\d{2})\b(?!.+d\/s)/i],[d,[h,B],[f,v]],[/(?:huawei|honor)([-\w ]+)[;\)]/i,/\b(nexus 6p|\w{2,4}e?-[atu]?[ln][\dx][012359c][adn]?)\b(?!.+d\/s)/i],[d,[h,B],[f,m]],[/\b(poco[\w ]+|m2\d{3}j\d\d[a-z]{2})(?: bui|\))/i,/\b; (\w+) build\/hm\1/i,/\b(hm[-_ ]?note?[_ ]?(?:\d\w)?) bui/i,/\b(redmi[\-_ ]?(?:note|k)?[\w_ ]+)(?: bui|\))/i,/oid[^\)]+; (m?[12][0-389][01]\w{3,6}[c-y])( bui|; wv|\))/i,/\b(mi[-_ ]?(?:a\d|one|one[_ ]plus|note lte|max|cc)?[_ ]?(?:\d?\w?)[_ ]?(?:plus|se|lite)?)(?: bui|\))/i],[[d,/_/g," "],[h,j],[f,m]],[/oid[^\)]+; (2\d{4}(283|rpbf)[cgl])( bui|\))/i,/\b(mi[-_ ]?(?:pad)(?:[\w_ ]+))(?: bui|\))/i],[[d,/_/g," "],[h,j],[f,v]],[/; (\w+) bui.+ oppo/i,/\b(cph[12]\d{3}|p(?:af|c[al]|d\w|e[ar])[mt]\d0|x9007|a101op)\b/i],[d,[h,"OPPO"],[f,m]],[/vivo (\w+)(?: bui|\))/i,/\b(v[12]\d{3}\w?[at])(?: bui|;)/i],[d,[h,"Vivo"],[f,m]],[/\b(rmx[1-3]\d{3})(?: bui|;|\))/i],[d,[h,"Realme"],[f,m]],[/\b(milestone|droid(?:[2-4x]| (?:bionic|x2|pro|razr))?:?( 4g)?)\b[\w ]+build\//i,/\bmot(?:orola)?[- ](\w*)/i,/((?:moto[\w\(\) ]+|xt\d{3,4}|nexus 6)(?= bui|\)))/i],[d,[h,P],[f,m]],[/\b(mz60\d|xoom[2 ]{0,2}) build\//i],[d,[h,P],[f,v]],[/((?=lg)?[vl]k\-?\d{3}) bui| 3\.[-\w; ]{10}lg?-([06cv9]{3,4})/i],[d,[h,"LG"],[f,v]],[/(lm(?:-?f100[nv]?|-[\w\.]+)(?= bui|\))|nexus [45])/i,/\blg[-e;\/ ]+((?!browser|netcast|android tv)\w+)/i,/\blg-?([\d\w]+) bui/i],[d,[h,"LG"],[f,m]],[/(ideatab[-\w ]+)/i,/lenovo ?(s[56]000[-\w]+|tab(?:[\w ]+)|yt[-\d\w]{6}|tb[-\d\w]{6})/i],[d,[h,"Lenovo"],[f,v]],[/(?:maemo|nokia).*(n900|lumia \d+)/i,/nokia[-_ ]?([-\w\.]*)/i],[[d,/_/g," "],[h,"Nokia"],[f,m]],[/(pixel c)\b/i],[d,[h,x],[f,v]],[/droid.+; (pixel[\daxl ]{0,6})(?: bui|\))/i],[d,[h,x],[f,m]],[/droid.+ (a?\d[0-2]{2}so|[c-g]\d{4}|so[-gl]\w+|xq-a\w[4-7][12])(?= bui|\).+chrome\/(?![1-6]{0,1}\d\.))/i],[d,[h,R],[f,m]],[/sony tablet [ps]/i,/\b(?:sony)?sgp\w+(?: bui|\))/i],[[d,"Xperia Tablet"],[h,R],[f,v]],[/ (kb2005|in20[12]5|be20[12][59])\b/i,/(?:one)?(?:plus)? (a\d0\d\d)(?: b|\))/i],[d,[h,"OnePlus"],[f,m]],[/(alexa)webm/i,/(kf[a-z]{2}wi|aeo[c-r]{2})( bui|\))/i,/(kf[a-z]+)( bui|\)).+silk\//i],[d,[h,_],[f,v]],[/((?:sd|kf)[0349hijorstuw]+)( bui|\)).+silk\//i],[[d,/(.+)/g,"Fire Phone $1"],[h,_],[f,m]],[/(playbook);[-\w\),; ]+(rim)/i],[d,h,[f,v]],[/\b((?:bb[a-f]|st[hv])100-\d)/i,/\(bb10; (\w+)/i],[d,[h,T],[f,m]],[/(?:\b|asus_)(transfo[prime ]{4,10} \w+|eeepc|slider \w+|nexus 7|padfone|p00[cj])/i],[d,[h,E],[f,v]],[/ (z[bes]6[027][012][km][ls]|zenfone \d\w?)\b/i],[d,[h,E],[f,m]],[/(nexus 9)/i],[d,[h,"HTC"],[f,v]],[/(htc)[-;_ ]{1,2}([\w ]+(?=\)| bui)|\w+)/i,/(zte)[- ]([\w ]+?)(?: bui|\/|\))/i,/(alcatel|geeksphone|nexian|panasonic(?!(?:;|\.))|sony(?!-bra))[-_ ]?([-\w]*)/i],[h,[d,/_/g," "],[f,m]],[/droid.+; ([ab][1-7]-?[0178a]\d\d?)/i],[d,[h,"Acer"],[f,v]],[/droid.+; (m[1-5] note) bui/i,/\bmz-([-\w]{2,})/i],[d,[h,"Meizu"],[f,m]],[/; ((?:power )?armor(?:[\w ]{0,8}))(?: bui|\))/i],[d,[h,"Ulefone"],[f,m]],[/(blackberry|benq|palm(?=\-)|sonyericsson|acer|asus|dell|meizu|motorola|polytron|infinix|tecno)[-_ ]?([-\w]*)/i,/(hp) ([\w ]+\w)/i,/(asus)-?(\w+)/i,/(microsoft); (lumia[\w ]+)/i,/(lenovo)[-_ ]?([-\w]+)/i,/(jolla)/i,/(oppo) ?([\w ]+) bui/i],[h,d,[f,m]],[/(kobo)\s(ereader|touch)/i,/(archos) (gamepad2?)/i,/(hp).+(touchpad(?!.+tablet)|tablet)/i,/(kindle)\/([\w\.]+)/i,/(nook)[\w ]+build\/(\w+)/i,/(dell) (strea[kpr\d ]*[\dko])/i,/(le[- ]+pan)[- ]+(\w{1,9}) bui/i,/(trinity)[- ]*(t\d{3}) bui/i,/(gigaset)[- ]+(q\w{1,9}) bui/i,/(vodafone) ([\w ]+)(?:\)| bui)/i],[h,d,[f,v]],[/(surface duo)/i],[d,[h,O],[f,v]],[/droid [\d\.]+; (fp\du?)(?: b|\))/i],[d,[h,"Fairphone"],[f,m]],[/(u304aa)/i],[d,[h,"AT&T"],[f,m]],[/\bsie-(\w*)/i],[d,[h,"Siemens"],[f,m]],[/\b(rct\w+) b/i],[d,[h,"RCA"],[f,v]],[/\b(venue[\d ]{2,7}) b/i],[d,[h,"Dell"],[f,v]],[/\b(q(?:mv|ta)\w+) b/i],[d,[h,"Verizon"],[f,v]],[/\b(?:barnes[& ]+noble |bn[rt])([\w\+ ]*) b/i],[d,[h,"Barnes & Noble"],[f,v]],[/\b(tm\d{3}\w+) b/i],[d,[h,"NuVision"],[f,v]],[/\b(k88) b/i],[d,[h,"ZTE"],[f,v]],[/\b(nx\d{3}j) b/i],[d,[h,"ZTE"],[f,m]],[/\b(gen\d{3}) b.+49h/i],[d,[h,"Swiss"],[f,m]],[/\b(zur\d{3}) b/i],[d,[h,"Swiss"],[f,v]],[/\b((zeki)?tb.*\b) b/i],[d,[h,"Zeki"],[f,v]],[/\b([yr]\d{2}) b/i,/\b(dragon[- ]+touch |dt)(\w{5}) b/i],[[h,"Dragon Touch"],d,[f,v]],[/\b(ns-?\w{0,9}) b/i],[d,[h,"Insignia"],[f,v]],[/\b((nxa|next)-?\w{0,9}) b/i],[d,[h,"NextBook"],[f,v]],[/\b(xtreme\_)?(v(1[045]|2[015]|[3469]0|7[05])) b/i],[[h,"Voice"],d,[f,m]],[/\b(lvtel\-)?(v1[12]) b/i],[[h,"LvTel"],d,[f,m]],[/\b(ph-1) /i],[d,[h,"Essential"],[f,m]],[/\b(v(100md|700na|7011|917g).*\b) b/i],[d,[h,"Envizen"],[f,v]],[/\b(trio[-\w\. ]+) b/i],[d,[h,"MachSpeed"],[f,v]],[/\btu_(1491) b/i],[d,[h,"Rotor"],[f,v]],[/(shield[\w ]+) b/i],[d,[h,"Nvidia"],[f,v]],[/(sprint) (\w+)/i],[h,d,[f,m]],[/(kin\.[onetw]{3})/i],[[d,/\./g," "],[h,O],[f,m]],[/droid.+; (cc6666?|et5[16]|mc[239][23]x?|vc8[03]x?)\)/i],[d,[h,F],[f,v]],[/droid.+; (ec30|ps20|tc[2-8]\d[kx])\)/i],[d,[h,F],[f,m]],[/smart-tv.+(samsung)/i],[h,[f,y]],[/hbbtv.+maple;(\d+)/i],[[d,/^/,"SmartTV"],[h,L],[f,y]],[/(nux; netcast.+smarttv|lg (netcast\.tv-201\d|android tv))/i],[[h,"LG"],[f,y]],[/(apple) ?tv/i],[h,[d,S+" TV"],[f,y]],[/crkey/i],[[d,C+"cast"],[h,x],[f,y]],[/droid.+aft(\w+)( bui|\))/i],[d,[h,_],[f,y]],[/\(dtv[\);].+(aquos)/i,/(aquos-tv[\w ]+)\)/i],[d,[h,N],[f,y]],[/(bravia[\w ]+)( bui|\))/i],[d,[h,R],[f,y]],[/(mitv-\w{5}) bui/i],[d,[h,j],[f,y]],[/Hbbtv.*(technisat) (.*);/i],[h,d,[f,y]],[/\b(roku)[\dx]*[\)\/]((?:dvp-)?[\d\.]*)/i,/hbbtv\/\d+\.\d+\.\d+ +\([\w\+ ]*; *([\w\d][^;]*);([^;]*)/i],[[h,trim],[d,trim],[f,y]],[/\b(android tv|smart[- ]?tv|opera tv|tv; rv:)\b/i],[[f,y]],[/(ouya)/i,/(nintendo) ([wids3utch]+)/i],[h,d,[f,w]],[/droid.+; (shield) bui/i],[d,[h,"Nvidia"],[f,w]],[/(playstation [345portablevi]+)/i],[d,[h,R],[f,w]],[/\b(xbox(?: one)?(?!; xbox))[\); ]/i],[d,[h,O],[f,w]],[/((pebble))app/i],[h,d,[f,I]],[/(watch)(?: ?os[,\/]|\d,\d\/)[\d\.]+/i],[d,[h,S],[f,I]],[/droid.+; (glass) \d/i],[d,[h,x],[f,I]],[/droid.+; (wt63?0{2,3})\)/i],[d,[h,F],[f,I]],[/(quest( 2| pro)?)/i],[d,[h,H],[f,I]],[/(tesla)(?: qtcarbrowser|\/[-\w\.]+)/i],[h,[f,k]],[/(aeobc)\b/i],[d,[h,_],[f,k]],[/droid .+?; ([^;]+?)(?: bui|; wv\)|\) applew).+? mobile safari/i],[d,[f,m]],[/droid .+?; ([^;]+?)(?: bui|\) applew).+?(?! mobile) safari/i],[d,[f,v]],[/\b((tablet|tab)[;\/]|focus\/\d(?!.+mobile))/i],[[f,v]],[/(phone|mobile(?:[;\/]| [ \w\/\.]*safari)|pda(?=.+windows ce))/i],[[f,m]],[/(android[-\w\. ]{0,9});.+buil/i],[d,[h,"Generic"]]],engine:[[/windows.+ edge\/([\w\.]+)/i],[g,[p,"EdgeHTML"]],[/webkit\/537\.36.+chrome\/(?!27)([\w\.]+)/i],[g,[p,"Blink"]],[/(presto)\/([\w\.]+)/i,/(webkit|trident|netfront|netsurf|amaya|lynx|w3m|goanna)\/([\w\.]+)/i,/ekioh(flow)\/([\w\.]+)/i,/(khtml|tasman|links)[\/ ]\(?([\w\.]+)/i,/(icab)[\/ ]([23]\.[\d\.]+)/i,/\b(libweb)/i],[p,g],[/rv\:([\w\.]{1,9})\b.+(gecko)/i],[g,p]],os:[[/microsoft (windows) (vista|xp)/i],[p,g],[/(windows (?:phone(?: os)?|mobile))[\/ ]?([\d\.\w ]*)/i],[p,[g,strMapper,U]],[/windows nt 6\.2; (arm)/i,/windows[\/ ]?([ntce\d\. ]+\w)(?!.+xbox)/i,/(?:win(?=3|9|n)|win 9x )([nt\d\.]+)/i],[[g,strMapper,U],[p,"Windows"]],[/ip[honead]{2,4}\b(?:.*os ([\w]+) like mac|; opera)/i,/(?:ios;fbsv\/|iphone.+ios[\/ ])([\d\.]+)/i,/cfnetwork\/.+darwin/i],[[g,/_/g,"."],[p,"iOS"]],[/(mac os x) ?([\w\. ]*)/i,/(macintosh|mac_powerpc\b)(?!.+haiku)/i],[[p,q],[g,/_/g,"."]],[/droid ([\w\.]+)\b.+(android[- ]x86|harmonyos)/i],[g,p],[/(android|webos|qnx|bada|rim tablet os|maemo|meego|sailfish)[-\/ ]?([\w\.]*)/i,/(blackberry)\w*\/([\w\.]*)/i,/(tizen|kaios)[\/ ]([\w\.]+)/i,/\((series40);/i],[p,g],[/\(bb(10);/i],[g,[p,T]],[/(?:symbian ?os|symbos|s60(?=;)|series60)[-\/ ]?([\w\.]*)/i],[g,[p,"Symbian"]],[/mozilla\/[\d\.]+ \((?:mobile|tablet|tv|mobile; [\w ]+); rv:.+ gecko\/([\w\.]+)/i],[g,[p,A+" OS"]],[/web0s;.+rt(tv)/i,/\b(?:hp)?wos(?:browser)?\/([\w\.]+)/i],[g,[p,"webOS"]],[/watch(?: ?os[,\/]|\d,\d\/)([\d\.]+)/i],[g,[p,"watchOS"]],[/crkey\/([\d\.]+)/i],[g,[p,C+"cast"]],[/(cros) [\w]+(?:\)| ([\w\.]+)\b)/i],[[p,$],g],[/panasonic;(viera)/i,/(netrange)mmh/i,/(nettv)\/(\d+\.[\w\.]+)/i,/(nintendo|playstation) ([wids345portablevuch]+)/i,/(xbox); +xbox ([^\);]+)/i,/\b(joli|palm)\b ?(?:os)?\/?([\w\.]*)/i,/(mint)[\/\(\) ]?(\w*)/i,/(mageia|vectorlinux)[; ]/i,/([kxln]?ubuntu|debian|suse|opensuse|gentoo|arch(?= linux)|slackware|fedora|mandriva|centos|pclinuxos|red ?hat|zenwalk|linpus|raspbian|plan 9|minix|risc os|contiki|deepin|manjaro|elementary os|sabayon|linspire)(?: gnu\/linux)?(?: enterprise)?(?:[- ]linux)?(?:-gnu)?[-\/ ]?(?!chrom|package)([-\w\.]*)/i,/(hurd|linux) ?([\w\.]*)/i,/(gnu) ?([\w\.]*)/i,/\b([-frentopcghs]{0,5}bsd|dragonfly)[\/ ]?(?!amd|[ix346]{1,2}86)([\w\.]*)/i,/(haiku) (\w+)/i],[p,g],[/(sunos) ?([\w\.\d]*)/i],[[p,"Solaris"],g],[/((?:open)?solaris)[-\/ ]?([\w\.]*)/i,/(aix) ((\d)(?=\.|\)| )[\w\.])*/i,/\b(beos|os\/2|amigaos|morphos|openvms|fuchsia|hp-ux|serenityos)/i,/(unix) ?([\w\.]*)/i],[p,g]]},UAParser=function(e,t){if(typeof e===l&&(t=e,e=a),!(this instanceof UAParser))return new UAParser(e,t).getResult();var r=typeof n!==s&&n.navigator?n.navigator:a,i=e||(r&&r.userAgent?r.userAgent:""),w=r&&r.userAgentData?r.userAgentData:a,y=t?extend(V,t):V,I=r&&r.userAgent==i;return this.getBrowser=function(){var e,t={};return t[p]=a,t[g]=a,rgxMapper.call(t,i,y.browser),t[u]=typeof(e=t[g])===c?e.replace(/[^\d\.]/g,"").split(".")[0]:a,I&&r&&r.brave&&typeof r.brave.isBrave==o&&(t[p]="Brave"),t},this.getCPU=function(){var e={};return e[b]=a,rgxMapper.call(e,i,y.cpu),e},this.getDevice=function(){var e={};return e[h]=a,e[d]=a,e[f]=a,rgxMapper.call(e,i,y.device),I&&!e[f]&&w&&w.mobile&&(e[f]=m),I&&"Macintosh"==e[d]&&r&&typeof r.standalone!==s&&r.maxTouchPoints&&r.maxTouchPoints>2&&(e[d]="iPad",e[f]=v),e},this.getEngine=function(){var e={};return e[p]=a,e[g]=a,rgxMapper.call(e,i,y.engine),e},this.getOS=function(){var e={};return e[p]=a,e[g]=a,rgxMapper.call(e,i,y.os),I&&!e[p]&&w&&"Unknown"!=w.platform&&(e[p]=w.platform.replace(/chrome os/i,$).replace(/macos/i,q)),e},this.getResult=function(){return{ua:this.getUA(),browser:this.getBrowser(),engine:this.getEngine(),os:this.getOS(),device:this.getDevice(),cpu:this.getCPU()}},this.getUA=function(){return i},this.setUA=function(e){return i=typeof e===c&&e.length>500?trim(e,500):e,this},this.setUA(i),this};UAParser.VERSION="1.0.37",UAParser.BROWSER=enumerize([p,g,u]),UAParser.CPU=enumerize([b]),UAParser.DEVICE=enumerize([d,h,f,w,m,y,v,I,k]),UAParser.ENGINE=UAParser.OS=enumerize([p,g]),typeof t!==s?(e.exports&&(t=e.exports=UAParser),t.UAParser=UAParser):r.amdO?a!==(i=(function(){return UAParser}).call(t,r,t,e))&&(e.exports=i):typeof n!==s&&(n.UAParser=UAParser);var z=typeof n!==s&&(n.jQuery||n.Zepto);if(z&&!z.ua){var K=new UAParser;z.ua=K.getResult(),z.ua.get=function(){return K.getUA()},z.ua.set=function(e){K.setUA(e);var t=K.getResult();for(var r in t)z.ua[r]=t[r]}}}("object"==typeof window?window:this)},94651:function(e,t,r){"use strict";r.d(t,{qX:function(){return _getProvider},Xd:function(){return _registerComponent},Mq:function(){return getApp},ZF:function(){return initializeApp},KN:function(){return registerVersion}});var i,n,a=r(75856);/**
+ * @license
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */let o=[];(i=n||(n={}))[i.DEBUG=0]="DEBUG",i[i.VERBOSE=1]="VERBOSE",i[i.INFO=2]="INFO",i[i.WARN=3]="WARN",i[i.ERROR=4]="ERROR",i[i.SILENT=5]="SILENT";let s={debug:n.DEBUG,verbose:n.VERBOSE,info:n.INFO,warn:n.WARN,error:n.ERROR,silent:n.SILENT},l=n.INFO,c={[n.DEBUG]:"log",[n.VERBOSE]:"log",[n.INFO]:"info",[n.WARN]:"warn",[n.ERROR]:"error"},defaultLogHandler=(e,t,...r)=>{if(t<e.logLevel)return;let i=new Date().toISOString(),n=c[t];if(n)console[n](`[${i}]  ${e.name}:`,...r);else throw Error(`Attempted to log a message with an invalid logType (value: ${t})`)};var u=r(7682),d=r(80686);/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */let PlatformLoggerServiceImpl=class PlatformLoggerServiceImpl{constructor(e){this.container=e}getPlatformInfoString(){let e=this.container.getProviders();return e.map(e=>{if(!function(e){let t=e.getComponent();return(null==t?void 0:t.type)==="VERSION"}(e))return null;{let t=e.getImmediate();return`${t.library}/${t.version}`}}).filter(e=>e).join(" ")}};let p="@firebase/app",f="0.9.26",h=new class{constructor(e){this.name=e,this._logLevel=l,this._logHandler=defaultLogHandler,this._userLogHandler=null,o.push(this)}get logLevel(){return this._logLevel}set logLevel(e){if(!(e in n))throw TypeError(`Invalid value "${e}" assigned to \`logLevel\``);this._logLevel=e}setLogLevel(e){this._logLevel="string"==typeof e?s[e]:e}get logHandler(){return this._logHandler}set logHandler(e){if("function"!=typeof e)throw TypeError("Value assigned to `logHandler` must be a function");this._logHandler=e}get userLogHandler(){return this._userLogHandler}set userLogHandler(e){this._userLogHandler=e}debug(...e){this._userLogHandler&&this._userLogHandler(this,n.DEBUG,...e),this._logHandler(this,n.DEBUG,...e)}log(...e){this._userLogHandler&&this._userLogHandler(this,n.VERBOSE,...e),this._logHandler(this,n.VERBOSE,...e)}info(...e){this._userLogHandler&&this._userLogHandler(this,n.INFO,...e),this._logHandler(this,n.INFO,...e)}warn(...e){this._userLogHandler&&this._userLogHandler(this,n.WARN,...e),this._logHandler(this,n.WARN,...e)}error(...e){this._userLogHandler&&this._userLogHandler(this,n.ERROR,...e),this._logHandler(this,n.ERROR,...e)}}("@firebase/app"),g="[DEFAULT]",b={[p]:"fire-core","@firebase/app-compat":"fire-core-compat","@firebase/analytics":"fire-analytics","@firebase/analytics-compat":"fire-analytics-compat","@firebase/app-check":"fire-app-check","@firebase/app-check-compat":"fire-app-check-compat","@firebase/auth":"fire-auth","@firebase/auth-compat":"fire-auth-compat","@firebase/database":"fire-rtdb","@firebase/database-compat":"fire-rtdb-compat","@firebase/functions":"fire-fn","@firebase/functions-compat":"fire-fn-compat","@firebase/installations":"fire-iid","@firebase/installations-compat":"fire-iid-compat","@firebase/messaging":"fire-fcm","@firebase/messaging-compat":"fire-fcm-compat","@firebase/performance":"fire-perf","@firebase/performance-compat":"fire-perf-compat","@firebase/remote-config":"fire-rc","@firebase/remote-config-compat":"fire-rc-compat","@firebase/storage":"fire-gcs","@firebase/storage-compat":"fire-gcs-compat","@firebase/firestore":"fire-fst","@firebase/firestore-compat":"fire-fst-compat","fire-js":"fire-js",firebase:"fire-js-all"},w=new Map,m=new Map;function _registerComponent(e){let t=e.name;if(m.has(t))return h.debug(`There were multiple attempts to register component ${t}.`),!1;for(let r of(m.set(t,e),w.values()))!function(e,t){try{e.container.addComponent(t)}catch(r){h.debug(`Component ${t.name} failed to register with FirebaseApp ${e.name}`,r)}}(r,e);return!0}function _getProvider(e,t){let r=e.container.getProvider("heartbeat").getImmediate({optional:!0});return r&&r.triggerHeartbeat(),e.container.getProvider(t)}let v=new u.LL("app","Firebase",{"no-app":"No Firebase App '{$appName}' has been created - call initializeApp() first","bad-app-name":"Illegal App name: '{$appName}","duplicate-app":"Firebase App named '{$appName}' already exists with different options or config","app-deleted":"Firebase App named '{$appName}' already deleted","no-options":"Need to provide options, when not being deployed to hosting via source.","invalid-app-argument":"firebase.{$appName}() takes either no argument or a Firebase App instance.","invalid-log-argument":"First argument to `onLog` must be null or a function.","idb-open":"Error thrown when opening IndexedDB. Original error: {$originalErrorMessage}.","idb-get":"Error thrown when reading from IndexedDB. Original error: {$originalErrorMessage}.","idb-set":"Error thrown when writing to IndexedDB. Original error: {$originalErrorMessage}.","idb-delete":"Error thrown when deleting from IndexedDB. Original error: {$originalErrorMessage}."});/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */let FirebaseAppImpl=class FirebaseAppImpl{constructor(e,t,r){this._isDeleted=!1,this._options=Object.assign({},e),this._config=Object.assign({},t),this._name=t.name,this._automaticDataCollectionEnabled=t.automaticDataCollectionEnabled,this._container=r,this.container.addComponent(new a.wA("app",()=>this,"PUBLIC"))}get automaticDataCollectionEnabled(){return this.checkDestroyed(),this._automaticDataCollectionEnabled}set automaticDataCollectionEnabled(e){this.checkDestroyed(),this._automaticDataCollectionEnabled=e}get name(){return this.checkDestroyed(),this._name}get options(){return this.checkDestroyed(),this._options}get config(){return this.checkDestroyed(),this._config}get container(){return this._container}get isDeleted(){return this._isDeleted}set isDeleted(e){this._isDeleted=e}checkDestroyed(){if(this.isDeleted)throw v.create("app-deleted",{appName:this._name})}};function initializeApp(e,t={}){let r=e;if("object"!=typeof t){let e=t;t={name:e}}let i=Object.assign({name:g,automaticDataCollectionEnabled:!1},t),n=i.name;if("string"!=typeof n||!n)throw v.create("bad-app-name",{appName:String(n)});if(r||(r=(0,u.aH)()),!r)throw v.create("no-options");let o=w.get(n);if(o){if((0,u.vZ)(r,o.options)&&(0,u.vZ)(i,o.config))return o;throw v.create("duplicate-app",{appName:n})}let s=new a.H0(n);for(let e of m.values())s.addComponent(e);let l=new FirebaseAppImpl(r,i,s);return w.set(n,l),l}function getApp(e=g){let t=w.get(e);if(!t&&e===g&&(0,u.aH)())return initializeApp();if(!t)throw v.create("no-app",{appName:e});return t}function registerVersion(e,t,r){var i;let n=null!==(i=b[e])&&void 0!==i?i:e;r&&(n+=`-${r}`);let o=n.match(/\s|\//),s=t.match(/\s|\//);if(o||s){let e=[`Unable to register library "${n}" with version "${t}":`];o&&e.push(`library name "${n}" contains illegal characters (whitespace or "/")`),o&&s&&e.push("and"),s&&e.push(`version name "${t}" contains illegal characters (whitespace or "/")`),h.warn(e.join(" "));return}_registerComponent(new a.wA(`${n}-version`,()=>({library:n,version:t}),"VERSION"))}let y="firebase-heartbeat-store",I=null;function getDbPromise(){return I||(I=(0,d.X3)("firebase-heartbeat-database",1,{upgrade:(e,t)=>{if(0===t)try{e.createObjectStore(y)}catch(e){console.warn(e)}}}).catch(e=>{throw v.create("idb-open",{originalErrorMessage:e.message})})),I}async function readHeartbeatsFromIndexedDB(e){try{let t=await getDbPromise(),r=await t.transaction(y).objectStore(y).get(computeKey(e));return r}catch(e){if(e instanceof u.ZR)h.warn(e.message);else{let t=v.create("idb-get",{originalErrorMessage:null==e?void 0:e.message});h.warn(t.message)}}}async function writeHeartbeatsToIndexedDB(e,t){try{let r=await getDbPromise(),i=r.transaction(y,"readwrite"),n=i.objectStore(y);await n.put(t,computeKey(e)),await i.done}catch(e){if(e instanceof u.ZR)h.warn(e.message);else{let t=v.create("idb-set",{originalErrorMessage:null==e?void 0:e.message});h.warn(t.message)}}}function computeKey(e){return`${e.name}!${e.options.appId}`}let HeartbeatServiceImpl=class HeartbeatServiceImpl{constructor(e){this.container=e,this._heartbeatsCache=null;let t=this.container.getProvider("app").getImmediate();this._storage=new HeartbeatStorageImpl(t),this._heartbeatsCachePromise=this._storage.read().then(e=>(this._heartbeatsCache=e,e))}async triggerHeartbeat(){var e,t;let r=this.container.getProvider("platform-logger").getImmediate(),i=r.getPlatformInfoString(),n=getUTCDateString();return(null===(e=this._heartbeatsCache)||void 0===e?void 0:e.heartbeats)==null&&(this._heartbeatsCache=await this._heartbeatsCachePromise,(null===(t=this._heartbeatsCache)||void 0===t?void 0:t.heartbeats)==null)?void 0:this._heartbeatsCache.lastSentHeartbeatDate===n||this._heartbeatsCache.heartbeats.some(e=>e.date===n)?void 0:(this._heartbeatsCache.heartbeats.push({date:n,agent:i}),this._heartbeatsCache.heartbeats=this._heartbeatsCache.heartbeats.filter(e=>{let t=new Date(e.date).valueOf(),r=Date.now();return r-t<=2592e6}),this._storage.overwrite(this._heartbeatsCache))}async getHeartbeatsHeader(){var e;if(null===this._heartbeatsCache&&await this._heartbeatsCachePromise,(null===(e=this._heartbeatsCache)||void 0===e?void 0:e.heartbeats)==null||0===this._heartbeatsCache.heartbeats.length)return"";let t=getUTCDateString(),{heartbeatsToSend:r,unsentEntries:i}=function(e,t=1024){let r=[],i=e.slice();for(let n of e){let e=r.find(e=>e.agent===n.agent);if(e){if(e.dates.push(n.date),countBytes(r)>t){e.dates.pop();break}}else if(r.push({agent:n.agent,dates:[n.date]}),countBytes(r)>t){r.pop();break}i=i.slice(1)}return{heartbeatsToSend:r,unsentEntries:i}}(this._heartbeatsCache.heartbeats),n=(0,u.L)(JSON.stringify({version:2,heartbeats:r}));return this._heartbeatsCache.lastSentHeartbeatDate=t,i.length>0?(this._heartbeatsCache.heartbeats=i,await this._storage.overwrite(this._heartbeatsCache)):(this._heartbeatsCache.heartbeats=[],this._storage.overwrite(this._heartbeatsCache)),n}};function getUTCDateString(){let e=new Date;return e.toISOString().substring(0,10)}let HeartbeatStorageImpl=class HeartbeatStorageImpl{constructor(e){this.app=e,this._canUseIndexedDBPromise=this.runIndexedDBEnvironmentCheck()}async runIndexedDBEnvironmentCheck(){return!!(0,u.hl)()&&(0,u.eu)().then(()=>!0).catch(()=>!1)}async read(){let e=await this._canUseIndexedDBPromise;if(!e)return{heartbeats:[]};{let e=await readHeartbeatsFromIndexedDB(this.app);return(null==e?void 0:e.heartbeats)?e:{heartbeats:[]}}}async overwrite(e){var t;let r=await this._canUseIndexedDBPromise;if(r){let r=await this.read();return writeHeartbeatsToIndexedDB(this.app,{lastSentHeartbeatDate:null!==(t=e.lastSentHeartbeatDate)&&void 0!==t?t:r.lastSentHeartbeatDate,heartbeats:e.heartbeats})}}async add(e){var t;let r=await this._canUseIndexedDBPromise;if(r){let r=await this.read();return writeHeartbeatsToIndexedDB(this.app,{lastSentHeartbeatDate:null!==(t=e.lastSentHeartbeatDate)&&void 0!==t?t:r.lastSentHeartbeatDate,heartbeats:[...r.heartbeats,...e.heartbeats]})}}};function countBytes(e){return(0,u.L)(JSON.stringify({version:2,heartbeats:e})).length}_registerComponent(new a.wA("platform-logger",e=>new PlatformLoggerServiceImpl(e),"PRIVATE")),_registerComponent(new a.wA("heartbeat",e=>new HeartbeatServiceImpl(e),"PRIVATE")),registerVersion(p,f,""),registerVersion(p,f,"esm2017"),registerVersion("fire-js","")},75856:function(e,t,r){"use strict";r.d(t,{H0:function(){return ComponentContainer},wA:function(){return Component}});var i=r(7682);let Component=class Component{constructor(e,t,r){this.name=e,this.instanceFactory=t,this.type=r,this.multipleInstances=!1,this.serviceProps={},this.instantiationMode="LAZY",this.onInstanceCreated=null}setInstantiationMode(e){return this.instantiationMode=e,this}setMultipleInstances(e){return this.multipleInstances=e,this}setServiceProps(e){return this.serviceProps=e,this}setInstanceCreatedCallback(e){return this.onInstanceCreated=e,this}};/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */let n="[DEFAULT]";/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */let Provider=class Provider{constructor(e,t){this.name=e,this.container=t,this.component=null,this.instances=new Map,this.instancesDeferred=new Map,this.instancesOptions=new Map,this.onInitCallbacks=new Map}get(e){let t=this.normalizeInstanceIdentifier(e);if(!this.instancesDeferred.has(t)){let e=new i.BH;if(this.instancesDeferred.set(t,e),this.isInitialized(t)||this.shouldAutoInitialize())try{let r=this.getOrInitializeService({instanceIdentifier:t});r&&e.resolve(r)}catch(e){}}return this.instancesDeferred.get(t).promise}getImmediate(e){var t;let r=this.normalizeInstanceIdentifier(null==e?void 0:e.identifier),i=null!==(t=null==e?void 0:e.optional)&&void 0!==t&&t;if(this.isInitialized(r)||this.shouldAutoInitialize())try{return this.getOrInitializeService({instanceIdentifier:r})}catch(e){if(i)return null;throw e}else{if(i)return null;throw Error(`Service ${this.name} is not available`)}}getComponent(){return this.component}setComponent(e){if(e.name!==this.name)throw Error(`Mismatching Component ${e.name} for Provider ${this.name}.`);if(this.component)throw Error(`Component for ${this.name} has already been provided`);if(this.component=e,this.shouldAutoInitialize()){if("EAGER"===e.instantiationMode)try{this.getOrInitializeService({instanceIdentifier:n})}catch(e){}for(let[e,t]of this.instancesDeferred.entries()){let r=this.normalizeInstanceIdentifier(e);try{let e=this.getOrInitializeService({instanceIdentifier:r});t.resolve(e)}catch(e){}}}}clearInstance(e=n){this.instancesDeferred.delete(e),this.instancesOptions.delete(e),this.instances.delete(e)}async delete(){let e=Array.from(this.instances.values());await Promise.all([...e.filter(e=>"INTERNAL"in e).map(e=>e.INTERNAL.delete()),...e.filter(e=>"_delete"in e).map(e=>e._delete())])}isComponentSet(){return null!=this.component}isInitialized(e=n){return this.instances.has(e)}getOptions(e=n){return this.instancesOptions.get(e)||{}}initialize(e={}){let{options:t={}}=e,r=this.normalizeInstanceIdentifier(e.instanceIdentifier);if(this.isInitialized(r))throw Error(`${this.name}(${r}) has already been initialized`);if(!this.isComponentSet())throw Error(`Component ${this.name} has not been registered yet`);let i=this.getOrInitializeService({instanceIdentifier:r,options:t});for(let[e,t]of this.instancesDeferred.entries()){let n=this.normalizeInstanceIdentifier(e);r===n&&t.resolve(i)}return i}onInit(e,t){var r;let i=this.normalizeInstanceIdentifier(t),n=null!==(r=this.onInitCallbacks.get(i))&&void 0!==r?r:new Set;n.add(e),this.onInitCallbacks.set(i,n);let a=this.instances.get(i);return a&&e(a,i),()=>{n.delete(e)}}invokeOnInitCallbacks(e,t){let r=this.onInitCallbacks.get(t);if(r)for(let i of r)try{i(e,t)}catch(e){}}getOrInitializeService({instanceIdentifier:e,options:t={}}){let r=this.instances.get(e);if(!r&&this.component&&(r=this.component.instanceFactory(this.container,{instanceIdentifier:e===n?void 0:e,options:t}),this.instances.set(e,r),this.instancesOptions.set(e,t),this.invokeOnInitCallbacks(r,e),this.component.onInstanceCreated))try{this.component.onInstanceCreated(this.container,e,r)}catch(e){}return r||null}normalizeInstanceIdentifier(e=n){return this.component?this.component.multipleInstances?e:n:e}shouldAutoInitialize(){return!!this.component&&"EXPLICIT"!==this.component.instantiationMode}};/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */let ComponentContainer=class ComponentContainer{constructor(e){this.name=e,this.providers=new Map}addComponent(e){let t=this.getProvider(e.name);if(t.isComponentSet())throw Error(`Component ${e.name} has already been registered with ${this.name}`);t.setComponent(e)}addOrOverwriteComponent(e){let t=this.getProvider(e.name);t.isComponentSet()&&this.providers.delete(e.name),this.addComponent(e)}getProvider(e){if(this.providers.has(e))return this.providers.get(e);let t=new Provider(e,this);return this.providers.set(e,t),t}getProviders(){return Array.from(this.providers.values())}}},38656:function(e,t,r){"use strict";r.d(t,{ZF:function(){return i.ZF}});var i=r(94651);/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */(0,i.KN)("firebase","10.7.2","app")},3223:function(e,t,r){"use strict";let i,n;r.d(t,{pQ:function(){return deleteToken},KL:function(){return getMessagingInWindow},LP:function(){return index_esm2017_getToken},Gb:function(){return isWindowSupported}});var a,o,s,l,c,u=r(94651),d=r(75856),p=r(7682);let instanceOfAny=(e,t)=>t.some(t=>e instanceof t),f=new WeakMap,h=new WeakMap,g=new WeakMap,b=new WeakMap,w=new WeakMap,m={get(e,t,r){if(e instanceof IDBTransaction){if("done"===t)return h.get(e);if("objectStoreNames"===t)return e.objectStoreNames||g.get(e);if("store"===t)return r.objectStoreNames[1]?void 0:r.objectStore(r.objectStoreNames[0])}return wrap_idb_value_wrap(e[t])},set:(e,t,r)=>(e[t]=r,!0),has:(e,t)=>e instanceof IDBTransaction&&("done"===t||"store"===t)||t in e};function wrap_idb_value_wrap(e){var t;if(e instanceof IDBRequest)return function(e){let t=new Promise((t,r)=>{let unlisten=()=>{e.removeEventListener("success",success),e.removeEventListener("error",error)},success=()=>{t(wrap_idb_value_wrap(e.result)),unlisten()},error=()=>{r(e.error),unlisten()};e.addEventListener("success",success),e.addEventListener("error",error)});return t.then(t=>{t instanceof IDBCursor&&f.set(t,e)}).catch(()=>{}),w.set(t,e),t}(e);if(b.has(e))return b.get(e);let r="function"==typeof(t=e)?t!==IDBDatabase.prototype.transaction||"objectStoreNames"in IDBTransaction.prototype?(n||(n=[IDBCursor.prototype.advance,IDBCursor.prototype.continue,IDBCursor.prototype.continuePrimaryKey])).includes(t)?function(...e){return t.apply(unwrap(this),e),wrap_idb_value_wrap(f.get(this))}:function(...e){return wrap_idb_value_wrap(t.apply(unwrap(this),e))}:function(e,...r){let i=t.call(unwrap(this),e,...r);return g.set(i,e.sort?e.sort():[e]),wrap_idb_value_wrap(i)}:(t instanceof IDBTransaction&&function(e){if(h.has(e))return;let t=new Promise((t,r)=>{let unlisten=()=>{e.removeEventListener("complete",complete),e.removeEventListener("error",error),e.removeEventListener("abort",error)},complete=()=>{t(),unlisten()},error=()=>{r(e.error||new DOMException("AbortError","AbortError")),unlisten()};e.addEventListener("complete",complete),e.addEventListener("error",error),e.addEventListener("abort",error)});h.set(e,t)}(t),instanceOfAny(t,i||(i=[IDBDatabase,IDBObjectStore,IDBIndex,IDBCursor,IDBTransaction])))?new Proxy(t,m):t;return r!==e&&(b.set(e,r),w.set(r,e)),r}let unwrap=e=>w.get(e),v=["get","getKey","getAll","getAllKeys","count"],y=["put","add","delete","clear"],I=new Map;function getMethod(e,t){if(!(e instanceof IDBDatabase&&!(t in e)&&"string"==typeof t))return;if(I.get(t))return I.get(t);let r=t.replace(/FromIndex$/,""),i=t!==r,n=y.includes(r);if(!(r in(i?IDBIndex:IDBObjectStore).prototype)||!(n||v.includes(r)))return;let method=async function(e,...t){let a=this.transaction(e,n?"readwrite":"readonly"),o=a.store;return i&&(o=o.index(t.shift())),(await Promise.all([o[r](...t),n&&a.done]))[0]};return I.set(t,method),method}m={...a=m,get:(e,t,r)=>getMethod(e,t)||a.get(e,t,r),has:(e,t)=>!!getMethod(e,t)||a.has(e,t)};let k="@firebase/installations",_="0.6.4",S=`w:${_}`,E="FIS_v2",T=new p.LL("installations","Installations",{"missing-app-config-values":'Missing App configuration value: "{$valueName}"',"not-registered":"Firebase Installation is not registered.","installation-not-found":"Firebase Installation not found.","request-failed":'{$requestName} request failed with error "{$serverCode} {$serverStatus}: {$serverMessage}"',"app-offline":"Could not process request. Application offline.","delete-pending-registration":"Can't delete installation while there is a pending registration request."});function isServerError(e){return e instanceof p.ZR&&e.code.includes("request-failed")}/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */function getInstallationsEndpoint({projectId:e}){return`https://firebaseinstallations.googleapis.com/v1/projects/${e}/installations`}function extractAuthTokenInfoFromResponse(e){return{token:e.token,requestStatus:2,expiresIn:Number(e.expiresIn.replace("s","000")),creationTime:Date.now()}}async function getErrorFromResponse(e,t){let r=await t.json(),i=r.error;return T.create("request-failed",{requestName:e,serverCode:i.code,serverMessage:i.message,serverStatus:i.status})}function getHeaders({apiKey:e}){return new Headers({"Content-Type":"application/json",Accept:"application/json","x-goog-api-key":e})}async function retryIfServerError(e){let t=await e();return t.status>=500&&t.status<600?e():t}/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function createInstallationRequest({appConfig:e,heartbeatServiceProvider:t},{fid:r}){let i=getInstallationsEndpoint(e),n=getHeaders(e),a=t.getImmediate({optional:!0});if(a){let e=await a.getHeartbeatsHeader();e&&n.append("x-firebase-client",e)}let o={fid:r,authVersion:E,appId:e.appId,sdkVersion:S},s={method:"POST",headers:n,body:JSON.stringify(o)},l=await retryIfServerError(()=>fetch(i,s));if(l.ok){let e=await l.json(),t={fid:e.fid||r,registrationStatus:2,refreshToken:e.refreshToken,authToken:extractAuthTokenInfoFromResponse(e.authToken)};return t}throw await getErrorFromResponse("Create Installation",l)}/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */function sleep(e){return new Promise(t=>{setTimeout(t,e)})}/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */let D=/^[cdef][\w-]{21}$/;/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */function getKey(e){return`${e.appName}!${e.appId}`}/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */let C=new Map;function fidChanged(e,t){let r=getKey(e);callFidChangeCallbacks(r,t),function(e,t){let r=(!A&&"BroadcastChannel"in self&&((A=new BroadcastChannel("[Firebase] FID Change")).onmessage=e=>{callFidChangeCallbacks(e.data.key,e.data.fid)}),A);r&&r.postMessage({key:e,fid:t}),0===C.size&&A&&(A.close(),A=null)}(r,t)}function callFidChangeCallbacks(e,t){let r=C.get(e);if(r)for(let e of r)e(t)}let A=null,x="firebase-installations-store",B=null;function getDbPromise(){return B||(B=function(e,t,{blocked:r,upgrade:i,blocking:n,terminated:a}={}){let o=indexedDB.open(e,1),s=wrap_idb_value_wrap(o);return i&&o.addEventListener("upgradeneeded",e=>{i(wrap_idb_value_wrap(o.result),e.oldVersion,e.newVersion,wrap_idb_value_wrap(o.transaction))}),r&&o.addEventListener("blocked",()=>r()),s.then(e=>{a&&e.addEventListener("close",()=>a()),n&&e.addEventListener("versionchange",()=>n())}).catch(()=>{}),s}("firebase-installations-database",0,{upgrade:(e,t)=>{0===t&&e.createObjectStore(x)}})),B}async function set(e,t){let r=getKey(e),i=await getDbPromise(),n=i.transaction(x,"readwrite"),a=n.objectStore(x),o=await a.get(r);return await a.put(t,r),await n.done,o&&o.fid===t.fid||fidChanged(e,t.fid),t}async function remove(e){let t=getKey(e),r=await getDbPromise(),i=r.transaction(x,"readwrite");await i.objectStore(x).delete(t),await i.done}async function update(e,t){let r=getKey(e),i=await getDbPromise(),n=i.transaction(x,"readwrite"),a=n.objectStore(x),o=await a.get(r),s=t(o);return void 0===s?await a.delete(r):await a.put(s,r),await n.done,s&&(!o||o.fid!==s.fid)&&fidChanged(e,s.fid),s}/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function getInstallationEntry(e){let t;let r=await update(e.appConfig,r=>{let i=function(e){let t=e||{fid:function(){try{let e=new Uint8Array(17),t=self.crypto||self.msCrypto;t.getRandomValues(e),e[0]=112+e[0]%16;let r=function(e){let t=/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */function(e){let t=btoa(String.fromCharCode(...e));return t.replace(/\+/g,"-").replace(/\//g,"_")}(e);return t.substr(0,22)}(e);return D.test(r)?r:""}catch(e){return""}}(),registrationStatus:0};return clearTimedOutRequest(t)}(r),n=function(e,t){if(0===t.registrationStatus){if(!navigator.onLine){let e=Promise.reject(T.create("app-offline"));return{installationEntry:t,registrationPromise:e}}let r={fid:t.fid,registrationStatus:1,registrationTime:Date.now()},i=registerInstallation(e,r);return{installationEntry:r,registrationPromise:i}}return 1===t.registrationStatus?{installationEntry:t,registrationPromise:waitUntilFidRegistration(e)}:{installationEntry:t}}(e,i);return t=n.registrationPromise,n.installationEntry});return""===r.fid?{installationEntry:await t}:{installationEntry:r,registrationPromise:t}}async function registerInstallation(e,t){try{let r=await createInstallationRequest(e,t);return set(e.appConfig,r)}catch(r){throw isServerError(r)&&409===r.customData.serverCode?await remove(e.appConfig):await set(e.appConfig,{fid:t.fid,registrationStatus:0}),r}}async function waitUntilFidRegistration(e){let t=await updateInstallationRequest(e.appConfig);for(;1===t.registrationStatus;)await sleep(100),t=await updateInstallationRequest(e.appConfig);if(0===t.registrationStatus){let{installationEntry:t,registrationPromise:r}=await getInstallationEntry(e);return r||t}return t}function updateInstallationRequest(e){return update(e,e=>{if(!e)throw T.create("installation-not-found");return clearTimedOutRequest(e)})}function clearTimedOutRequest(e){return 1===e.registrationStatus&&e.registrationTime+1e4<Date.now()?{fid:e.fid,registrationStatus:0}:e}/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function generateAuthTokenRequest({appConfig:e,heartbeatServiceProvider:t},r){let i=function(e,{fid:t}){return`${getInstallationsEndpoint(e)}/${t}/authTokens:generate`}(e,r),n=function(e,{refreshToken:t}){let r=getHeaders(e);return r.append("Authorization",`${E} ${t}`),r}(e,r),a=t.getImmediate({optional:!0});if(a){let e=await a.getHeartbeatsHeader();e&&n.append("x-firebase-client",e)}let o={installation:{sdkVersion:S,appId:e.appId}},s={method:"POST",headers:n,body:JSON.stringify(o)},l=await retryIfServerError(()=>fetch(i,s));if(l.ok){let e=await l.json(),t=extractAuthTokenInfoFromResponse(e);return t}throw await getErrorFromResponse("Generate Auth Token",l)}/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function refreshAuthToken(e,t=!1){let r;let i=await update(e.appConfig,i=>{var n;if(!isEntryRegistered(i))throw T.create("not-registered");let a=i.authToken;if(!t&&2===(n=a).requestStatus&&!function(e){let t=Date.now();return t<e.creationTime||e.creationTime+e.expiresIn<t+36e5}(n))return i;if(1===a.requestStatus)return r=waitUntilAuthTokenRequest(e,t),i;{if(!navigator.onLine)throw T.create("app-offline");let t=function(e){let t={requestStatus:1,requestTime:Date.now()};return Object.assign(Object.assign({},e),{authToken:t})}(i);return r=fetchAuthTokenFromServer(e,t),t}}),n=r?await r:i.authToken;return n}async function waitUntilAuthTokenRequest(e,t){let r=await updateAuthTokenRequest(e.appConfig);for(;1===r.authToken.requestStatus;)await sleep(100),r=await updateAuthTokenRequest(e.appConfig);let i=r.authToken;return 0===i.requestStatus?refreshAuthToken(e,t):i}function updateAuthTokenRequest(e){return update(e,e=>{if(!isEntryRegistered(e))throw T.create("not-registered");let t=e.authToken;return 1===t.requestStatus&&t.requestTime+1e4<Date.now()?Object.assign(Object.assign({},e),{authToken:{requestStatus:0}}):e})}async function fetchAuthTokenFromServer(e,t){try{let r=await generateAuthTokenRequest(e,t),i=Object.assign(Object.assign({},t),{authToken:r});return await set(e.appConfig,i),r}catch(r){if(isServerError(r)&&(401===r.customData.serverCode||404===r.customData.serverCode))await remove(e.appConfig);else{let r=Object.assign(Object.assign({},t),{authToken:{requestStatus:0}});await set(e.appConfig,r)}throw r}}function isEntryRegistered(e){return void 0!==e&&2===e.registrationStatus}/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function getId(e){let{installationEntry:t,registrationPromise:r}=await getInstallationEntry(e);return r?r.catch(console.error):refreshAuthToken(e).catch(console.error),t.fid}/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function getToken(e,t=!1){await completeInstallationRegistration(e);let r=await refreshAuthToken(e,t);return r.token}async function completeInstallationRegistration(e){let{registrationPromise:t}=await getInstallationEntry(e);t&&await t}function getMissingValueError(e){return T.create("missing-app-config-values",{valueName:e})}/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */let O="installations";(0,u.Xd)(new d.wA(O,e=>{let t=e.getProvider("app").getImmediate(),r=/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */function(e){if(!e||!e.options)throw getMissingValueError("App Configuration");if(!e.name)throw getMissingValueError("App Name");for(let t of["projectId","apiKey","appId"])if(!e.options[t])throw getMissingValueError(t);return{appName:e.name,projectId:e.options.projectId,apiKey:e.options.apiKey,appId:e.options.appId}}(t),i=(0,u.qX)(t,"heartbeat");return{app:t,appConfig:r,heartbeatServiceProvider:i,_delete:()=>Promise.resolve()}},"PUBLIC")),(0,u.Xd)(new d.wA("installations-internal",e=>{let t=e.getProvider("app").getImmediate(),r=(0,u.qX)(t,O).getImmediate();return{getId:()=>getId(r),getToken:e=>getToken(r,e)}},"PRIVATE")),(0,u.KN)(k,_),(0,u.KN)(k,_,"esm2017");var P=r(80686);let M="BDOU99-h67HcA6JeFXHbSNMu7e2yNNu3RzoMj8TM4W88jITfq7ZmPvIM1Iv-4_l2LxQcYwhqby2xGpWwzjfAnG4",L="google.c.a.c_id";/**
+ * @license
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */function arrayToBase64(e){let t=new Uint8Array(e),r=btoa(String.fromCharCode(...t));return r.replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_")}(o=l||(l={}))[o.DATA_MESSAGE=1]="DATA_MESSAGE",o[o.DISPLAY_NOTIFICATION=3]="DISPLAY_NOTIFICATION",(s=c||(c={})).PUSH_RECEIVED="push-received",s.NOTIFICATION_CLICKED="notification-clicked";/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */let N="fcm_token_details_db",R="fcm_token_object_Store";async function migrateOldDatabase(e){if("databases"in indexedDB){let e=await indexedDB.databases(),t=e.map(e=>e.name);if(!t.includes(N))return null}let t=null,r=await (0,P.X3)(N,5,{upgrade:async(r,i,n,a)=>{var o;if(i<2||!r.objectStoreNames.contains(R))return;let s=a.objectStore(R),l=await s.index("fcmSenderId").get(e);if(await s.clear(),l){if(2===i){if(!l.auth||!l.p256dh||!l.endpoint)return;t={token:l.fcmToken,createTime:null!==(o=l.createTime)&&void 0!==o?o:Date.now(),subscriptionOptions:{auth:l.auth,p256dh:l.p256dh,endpoint:l.endpoint,swScope:l.swScope,vapidKey:"string"==typeof l.vapidKey?l.vapidKey:arrayToBase64(l.vapidKey)}}}else 3===i?t={token:l.fcmToken,createTime:l.createTime,subscriptionOptions:{auth:arrayToBase64(l.auth),p256dh:arrayToBase64(l.p256dh),endpoint:l.endpoint,swScope:l.swScope,vapidKey:arrayToBase64(l.vapidKey)}}:4===i&&(t={token:l.fcmToken,createTime:l.createTime,subscriptionOptions:{auth:arrayToBase64(l.auth),p256dh:arrayToBase64(l.p256dh),endpoint:l.endpoint,swScope:l.swScope,vapidKey:arrayToBase64(l.vapidKey)}})}}});return r.close(),await (0,P.Lj)(N),await (0,P.Lj)("fcm_vapid_details_db"),await (0,P.Lj)("undefined"),!function(e){if(!e||!e.subscriptionOptions)return!1;let{subscriptionOptions:t}=e;return"number"==typeof e.createTime&&e.createTime>0&&"string"==typeof e.token&&e.token.length>0&&"string"==typeof t.auth&&t.auth.length>0&&"string"==typeof t.p256dh&&t.p256dh.length>0&&"string"==typeof t.endpoint&&t.endpoint.length>0&&"string"==typeof t.swScope&&t.swScope.length>0&&"string"==typeof t.vapidKey&&t.vapidKey.length>0}(t)?null:t}let j="firebase-messaging-store",F=null;function index_esm2017_getDbPromise(){return F||(F=(0,P.X3)("firebase-messaging-database",1,{upgrade:(e,t)=>{0===t&&e.createObjectStore(j)}})),F}async function dbGet(e){let t=function({appConfig:e}){return e.appId}(e),r=await index_esm2017_getDbPromise(),i=await r.transaction(j).objectStore(j).get(t);if(i)return i;{let t=await migrateOldDatabase(e.appConfig.senderId);if(t)return await dbSet(e,t),t}}async function dbSet(e,t){let r=function({appConfig:e}){return e.appId}(e),i=await index_esm2017_getDbPromise(),n=i.transaction(j,"readwrite");return await n.objectStore(j).put(t,r),await n.done,t}async function dbRemove(e){let t=function({appConfig:e}){return e.appId}(e),r=await index_esm2017_getDbPromise(),i=r.transaction(j,"readwrite");await i.objectStore(j).delete(t),await i.done}let H=new p.LL("messaging","Messaging",{"missing-app-config-values":'Missing App configuration value: "{$valueName}"',"only-available-in-window":"This method is available in a Window context.","only-available-in-sw":"This method is available in a service worker context.","permission-default":"The notification permission was not granted and dismissed instead.","permission-blocked":"The notification permission was not granted and blocked instead.","unsupported-browser":"This browser doesn't support the API's required to use the Firebase SDK.","indexed-db-unsupported":"This browser doesn't support indexedDb.open() (ex. Safari iFrame, Firefox Private Browsing, etc)","failed-service-worker-registration":"We are unable to register the default service worker. {$browserErrorMessage}","token-subscribe-failed":"A problem occurred while subscribing the user to FCM: {$errorInfo}","token-subscribe-no-token":"FCM returned no token when subscribing the user to push.","token-unsubscribe-failed":"A problem occurred while unsubscribing the user from FCM: {$errorInfo}","token-update-failed":"A problem occurred while updating the user from FCM: {$errorInfo}","token-update-no-token":"FCM returned no token when updating the user to push.","use-sw-after-get-token":"The useServiceWorker() method may only be called once and must be called before calling getToken() to ensure your service worker is used.","invalid-sw-registration":"The input to useServiceWorker() must be a ServiceWorkerRegistration.","invalid-bg-handler":"The input to setBackgroundMessageHandler() must be a function.","invalid-vapid-key":"The public VAPID key must be a string.","use-vapid-key-after-get-token":"The usePublicVapidKey() method may only be called once and must be called before calling getToken() to ensure your VAPID key is used."});/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function requestGetToken(e,t){let r;let i=await index_esm2017_getHeaders(e),n=getBody(t),a={method:"POST",headers:i,body:JSON.stringify(n)};try{let t=await fetch(getEndpoint(e.appConfig),a);r=await t.json()}catch(e){throw H.create("token-subscribe-failed",{errorInfo:null==e?void 0:e.toString()})}if(r.error){let e=r.error.message;throw H.create("token-subscribe-failed",{errorInfo:e})}if(!r.token)throw H.create("token-subscribe-no-token");return r.token}async function requestUpdateToken(e,t){let r;let i=await index_esm2017_getHeaders(e),n=getBody(t.subscriptionOptions),a={method:"PATCH",headers:i,body:JSON.stringify(n)};try{let i=await fetch(`${getEndpoint(e.appConfig)}/${t.token}`,a);r=await i.json()}catch(e){throw H.create("token-update-failed",{errorInfo:null==e?void 0:e.toString()})}if(r.error){let e=r.error.message;throw H.create("token-update-failed",{errorInfo:e})}if(!r.token)throw H.create("token-update-no-token");return r.token}async function requestDeleteToken(e,t){let r=await index_esm2017_getHeaders(e);try{let i=await fetch(`${getEndpoint(e.appConfig)}/${t}`,{method:"DELETE",headers:r}),n=await i.json();if(n.error){let e=n.error.message;throw H.create("token-unsubscribe-failed",{errorInfo:e})}}catch(e){throw H.create("token-unsubscribe-failed",{errorInfo:null==e?void 0:e.toString()})}}function getEndpoint({projectId:e}){return`https://fcmregistrations.googleapis.com/v1/projects/${e}/registrations`}async function index_esm2017_getHeaders({appConfig:e,installations:t}){let r=await t.getToken();return new Headers({"Content-Type":"application/json",Accept:"application/json","x-goog-api-key":e.apiKey,"x-goog-firebase-installations-auth":`FIS ${r}`})}function getBody({p256dh:e,auth:t,endpoint:r,vapidKey:i}){let n={web:{endpoint:r,auth:t,p256dh:e}};return i!==M&&(n.web.applicationPubKey=i),n}async function getTokenInternal(e){let t=await getPushSubscription(e.swRegistration,e.vapidKey),r={vapidKey:e.vapidKey,swScope:e.swRegistration.scope,endpoint:t.endpoint,auth:arrayToBase64(t.getKey("auth")),p256dh:arrayToBase64(t.getKey("p256dh"))},i=await dbGet(e.firebaseDependencies);if(!i)return getNewToken(e.firebaseDependencies,r);if(function(e,t){let r=t.vapidKey===e.vapidKey,i=t.endpoint===e.endpoint,n=t.auth===e.auth,a=t.p256dh===e.p256dh;return r&&i&&n&&a}(i.subscriptionOptions,r))return Date.now()>=i.createTime+6048e5?updateToken(e,{token:i.token,createTime:Date.now(),subscriptionOptions:r}):i.token;try{await requestDeleteToken(e.firebaseDependencies,i.token)}catch(e){console.warn(e)}return getNewToken(e.firebaseDependencies,r)}async function deleteTokenInternal(e){let t=await dbGet(e.firebaseDependencies);t&&(await requestDeleteToken(e.firebaseDependencies,t.token),await dbRemove(e.firebaseDependencies));let r=await e.swRegistration.pushManager.getSubscription();return!r||r.unsubscribe()}async function updateToken(e,t){try{let r=await requestUpdateToken(e.firebaseDependencies,t),i=Object.assign(Object.assign({},t),{token:r,createTime:Date.now()});return await dbSet(e.firebaseDependencies,i),r}catch(t){throw await deleteTokenInternal(e),t}}async function getNewToken(e,t){let r=await requestGetToken(e,t),i={token:r,createTime:Date.now(),subscriptionOptions:t};return await dbSet(e,i),i.token}async function getPushSubscription(e,t){let r=await e.pushManager.getSubscription();return r||e.pushManager.subscribe({userVisibleOnly:!0,applicationServerKey:function(e){let t="=".repeat((4-e.length%4)%4),r=(e+t).replace(/\-/g,"+").replace(/_/g,"/"),i=atob(r),n=new Uint8Array(i.length);for(let e=0;e<i.length;++e)n[e]=i.charCodeAt(e);return n}(t)})}/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */function externalizePayload(e){let t={from:e.from,collapseKey:e.collapse_key,messageId:e.fcmMessageId};return function(e,t){if(!t.notification)return;e.notification={};let r=t.notification.title;r&&(e.notification.title=r);let i=t.notification.body;i&&(e.notification.body=i);let n=t.notification.image;n&&(e.notification.image=n);let a=t.notification.icon;a&&(e.notification.icon=a)}(t,e),e.data&&(t.data=e.data),function(e,t){var r,i,n,a,o;if(!t.fcmOptions&&!(null===(r=t.notification)||void 0===r?void 0:r.click_action))return;e.fcmOptions={};let s=null!==(n=null===(i=t.fcmOptions)||void 0===i?void 0:i.link)&&void 0!==n?n:null===(a=t.notification)||void 0===a?void 0:a.click_action;s&&(e.fcmOptions.link=s);let l=null===(o=t.fcmOptions)||void 0===o?void 0:o.analytics_label;l&&(e.fcmOptions.analyticsLabel=l)}(t,e),t}function _mergeStrings(e,t){let r=[];for(let i=0;i<e.length;i++)r.push(e.charAt(i)),i<t.length&&r.push(t.charAt(i));return r.join("")}function index_esm2017_getMissingValueError(e){return H.create("missing-app-config-values",{valueName:e})}/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */_mergeStrings("hts/frbslgigp.ogepscmv/ieo/eaylg","tp:/ieaeogn-agolai.o/1frlglgc/o"),_mergeStrings("AzSCbw63g1R0nCw85jG8","Iaya3yLKwmgvh7cF0q4");/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */let MessagingService=class MessagingService{constructor(e,t,r){this.deliveryMetricsExportedToBigQueryEnabled=!1,this.onBackgroundMessageHandler=null,this.onMessageHandler=null,this.logEvents=[],this.isLogServiceStarted=!1;let i=/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */function(e){if(!e||!e.options)throw index_esm2017_getMissingValueError("App Configuration Object");if(!e.name)throw index_esm2017_getMissingValueError("App Name");let{options:t}=e;for(let e of["projectId","apiKey","appId","messagingSenderId"])if(!t[e])throw index_esm2017_getMissingValueError(e);return{appName:e.name,projectId:t.projectId,apiKey:t.apiKey,appId:t.appId,senderId:t.messagingSenderId}}(e);this.firebaseDependencies={app:e,appConfig:i,installations:t,analyticsProvider:r}}_delete(){return Promise.resolve()}};/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function registerDefaultSw(e){try{e.swRegistration=await navigator.serviceWorker.register("/firebase-messaging-sw.js",{scope:"/firebase-cloud-messaging-push-scope"}),e.swRegistration.update().catch(()=>{})}catch(e){throw H.create("failed-service-worker-registration",{browserErrorMessage:null==e?void 0:e.message})}}/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function updateSwReg(e,t){if(t||e.swRegistration||await registerDefaultSw(e),t||!e.swRegistration){if(!(t instanceof ServiceWorkerRegistration))throw H.create("invalid-sw-registration");e.swRegistration=t}}/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function updateVapidKey(e,t){t?e.vapidKey=t:e.vapidKey||(e.vapidKey=M)}/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function getToken$1(e,t){if(!navigator)throw H.create("only-available-in-window");if("default"===Notification.permission&&await Notification.requestPermission(),"granted"!==Notification.permission)throw H.create("permission-blocked");return await updateVapidKey(e,null==t?void 0:t.vapidKey),await updateSwReg(e,null==t?void 0:t.serviceWorkerRegistration),getTokenInternal(e)}/**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function logToScion(e,t,r){let i=function(e){switch(e){case c.NOTIFICATION_CLICKED:return"notification_open";case c.PUSH_RECEIVED:return"notification_foreground";default:throw Error()}}(t),n=await e.firebaseDependencies.analyticsProvider.get();n.logEvent(i,{message_id:r[L],message_name:r["google.c.a.c_l"],message_time:r["google.c.a.ts"],message_device_time:Math.floor(Date.now()/1e3)})}/**
+ * @license
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function messageEventListener(e,t){let r=t.data;if(!r.isFirebaseMessaging)return;e.onMessageHandler&&r.messageType===c.PUSH_RECEIVED&&("function"==typeof e.onMessageHandler?e.onMessageHandler(externalizePayload(r)):e.onMessageHandler.next(externalizePayload(r)));let i=r.data;"object"==typeof i&&i&&L in i&&"1"===i["google.c.a.e"]&&await logToScion(e,r.messageType,i)}let $="@firebase/messaging",q="0.12.5";/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function isWindowSupported(){try{await (0,p.eu)()}catch(e){return!1}return"undefined"!=typeof window&&(0,p.hl)()&&(0,p.zI)()&&"serviceWorker"in navigator&&"PushManager"in window&&"Notification"in window&&"fetch"in window&&ServiceWorkerRegistration.prototype.hasOwnProperty("showNotification")&&PushSubscription.prototype.hasOwnProperty("getKey")}/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */async function deleteToken$1(e){if(!navigator)throw H.create("only-available-in-window");return e.swRegistration||await registerDefaultSw(e),deleteTokenInternal(e)}/**
+ * @license
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */function getMessagingInWindow(e=(0,u.Mq)()){return isWindowSupported().then(e=>{if(!e)throw H.create("unsupported-browser")},e=>{throw H.create("indexed-db-unsupported")}),(0,u.qX)((0,p.m9)(e),"messaging").getImmediate()}async function index_esm2017_getToken(e,t){return getToken$1(e=(0,p.m9)(e),t)}function deleteToken(e){return deleteToken$1(e=(0,p.m9)(e))}(0,u.Xd)(new d.wA("messaging",e=>{let t=new MessagingService(e.getProvider("app").getImmediate(),e.getProvider("installations-internal").getImmediate(),e.getProvider("analytics-internal"));return navigator.serviceWorker.addEventListener("message",e=>messageEventListener(t,e)),t},"PUBLIC")),(0,u.Xd)(new d.wA("messaging-internal",e=>{let t=e.getProvider("messaging").getImmediate();return{getToken:e=>getToken$1(t,e)}},"PRIVATE")),(0,u.KN)($,q),(0,u.KN)($,q,"esm2017")},80686:function(e,t,r){"use strict";var i;let n,a;r.d(t,{Lj:function(){return deleteDB},X3:function(){return openDB}});let instanceOfAny=(e,t)=>t.some(t=>e instanceof t),o=new WeakMap,s=new WeakMap,l=new WeakMap,c=new WeakMap,u=new WeakMap,d={get(e,t,r){if(e instanceof IDBTransaction){if("done"===t)return s.get(e);if("objectStoreNames"===t)return e.objectStoreNames||l.get(e);if("store"===t)return r.objectStoreNames[1]?void 0:r.objectStore(r.objectStoreNames[0])}return wrap(e[t])},set:(e,t,r)=>(e[t]=r,!0),has:(e,t)=>e instanceof IDBTransaction&&("done"===t||"store"===t)||t in e};function wrap(e){var t;if(e instanceof IDBRequest)return function(e){let t=new Promise((t,r)=>{let unlisten=()=>{e.removeEventListener("success",success),e.removeEventListener("error",error)},success=()=>{t(wrap(e.result)),unlisten()},error=()=>{r(e.error),unlisten()};e.addEventListener("success",success),e.addEventListener("error",error)});return t.then(t=>{t instanceof IDBCursor&&o.set(t,e)}).catch(()=>{}),u.set(t,e),t}(e);if(c.has(e))return c.get(e);let r="function"==typeof(t=e)?t!==IDBDatabase.prototype.transaction||"objectStoreNames"in IDBTransaction.prototype?(a||(a=[IDBCursor.prototype.advance,IDBCursor.prototype.continue,IDBCursor.prototype.continuePrimaryKey])).includes(t)?function(...e){return t.apply(unwrap(this),e),wrap(o.get(this))}:function(...e){return wrap(t.apply(unwrap(this),e))}:function(e,...r){let i=t.call(unwrap(this),e,...r);return l.set(i,e.sort?e.sort():[e]),wrap(i)}:(t instanceof IDBTransaction&&function(e){if(s.has(e))return;let t=new Promise((t,r)=>{let unlisten=()=>{e.removeEventListener("complete",complete),e.removeEventListener("error",error),e.removeEventListener("abort",error)},complete=()=>{t(),unlisten()},error=()=>{r(e.error||new DOMException("AbortError","AbortError")),unlisten()};e.addEventListener("complete",complete),e.addEventListener("error",error),e.addEventListener("abort",error)});s.set(e,t)}(t),instanceOfAny(t,n||(n=[IDBDatabase,IDBObjectStore,IDBIndex,IDBCursor,IDBTransaction])))?new Proxy(t,d):t;return r!==e&&(c.set(e,r),u.set(r,e)),r}let unwrap=e=>u.get(e);function openDB(e,t,{blocked:r,upgrade:i,blocking:n,terminated:a}={}){let o=indexedDB.open(e,t),s=wrap(o);return i&&o.addEventListener("upgradeneeded",e=>{i(wrap(o.result),e.oldVersion,e.newVersion,wrap(o.transaction),e)}),r&&o.addEventListener("blocked",e=>r(e.oldVersion,e.newVersion,e)),s.then(e=>{a&&e.addEventListener("close",()=>a()),n&&e.addEventListener("versionchange",e=>n(e.oldVersion,e.newVersion,e))}).catch(()=>{}),s}function deleteDB(e,{blocked:t}={}){let r=indexedDB.deleteDatabase(e);return t&&r.addEventListener("blocked",e=>t(e.oldVersion,e)),wrap(r).then(()=>void 0)}let p=["get","getKey","getAll","getAllKeys","count"],f=["put","add","delete","clear"],h=new Map;function getMethod(e,t){if(!(e instanceof IDBDatabase&&!(t in e)&&"string"==typeof t))return;if(h.get(t))return h.get(t);let r=t.replace(/FromIndex$/,""),i=t!==r,n=f.includes(r);if(!(r in(i?IDBIndex:IDBObjectStore).prototype)||!(n||p.includes(r)))return;let method=async function(e,...t){let a=this.transaction(e,n?"readwrite":"readonly"),o=a.store;return i&&(o=o.index(t.shift())),(await Promise.all([o[r](...t),n&&a.done]))[0]};return h.set(t,method),method}d={...i=d,get:(e,t,r)=>getMethod(e,t)||i.get(e,t,r),has:(e,t)=>!!getMethod(e,t)||i.has(e,t)}}}]);
